@@ -1,47 +1,96 @@
-การตัดข้อความภาษาไทยโดยไม่นับสระลอยและวรรณยุกต์
+````markdown
+# การตัดข้อความภาษาไทยโดยไม่นับสระลอยและวรรณยุกต์ (API)
 
-<img src="https://img.shields.io/badge/dynamic/json?label=version&query=version&url=https%3A%2F%2Fraw.githubusercontent.com%2Fporpldev%2Fthai-sentence-cut%2Fmaster%2Fpackage.json" alt="version"> <img src="https://img.shields.io/badge/dynamic/json?label=license&query=license&url=https%3A%2F%2Fraw.githubusercontent.com%2Fporpldev%2Fthai-sentence-cut%2Fmaster%2Fpackage.json" alt="version"> <img src="https://img.shields.io/codecov/c/github/porpldev/thai-sentence-cut" alt="code coverage">
+โปรเจกต์นี้คือ API สำหรับการตัดข้อความภาษาไทยตามความยาวที่กำหนด โดยจะไม่นับสระลอยและวรรณยุกต์บางตัว ทำให้การคำนวณความยาวเหมาะสมกับการแสดงผลมากขึ้น
 
-## Installation
+## การใช้งานผ่าน Docker
 
-This is a [Node.js](https://nodejs.org/en/) module available through the
-[npm registry](https://www.npmjs.com/).
+**1. Build Docker Image:**
+```bash
+docker build -t thai-sentence-cut-api .
+````
 
-```
-$ npm install --save @praphan.o/thai-sentence-cut
-```
+**2. Run Docker Container:**
 
-## Usage
-
-```
-const { lengthOfThaiString, splitThaiStringByLength } = require('../src');
-
-const str = "ประโยคยาวๆ ที่ใช้ทดสอบการตัดคำและการนับความยาวของตัวอักขระโดยไม่สนใจสระและวรรณยุกต์ไทย";
-
-console.log(lengthOfThaiString(s));
-
-// output:
-// 76
-
-console.log(splitThaiStringByLength(s,20));
-
-// output:
-// [ 'ประโยคยาวๆ ที่ใช้ทดสอบ',
-//   'การตัดคำและการนับความ',
-//   'ยาวของตัวอักขระโดยไม่',
-//   'สนใจสระและวรรณยุกต์ไทย' ]
+```bash
+docker run -p 3000:3000 -d thai-sentence-cut-api
 ```
 
-## Depends
+เมื่อ container ทำงานแล้ว API จะพร้อมใช้งานที่ `http://localhost:3000`
 
-- [wordcut](https://www.npmjs.com/package/wordcut)
+-----
 
-## Update
+## API Endpoints
 
-- 1.1.0 splitThaiStringByLength can split multi-line string (string with new line character)
-- 1.1.1 update correct version
-- 1.1.2 update dependencies to avoid vulnerabilities
-- 1.1.3 just update readme (sorry for this)
-- 1.1.4 update repository url
-- 1.1.5 update dependencies
-- 1.1.6 typescript support
+### 1\. `/length`
+
+นับความยาวของข้อความภาษาไทย (ไม่นับสระลอยและวรรณยุกต์)
+
+  * **Method:** `POST`
+  * **Body (JSON):**
+    ```json
+    {
+      "text": "ข้อความภาษาไทย"
+    }
+    ```
+  * **Response (JSON):**
+    ```json
+    {
+      "length": 15
+    }
+    ```
+
+### 2\. `/split`
+
+ตัดข้อความและ trả về เป็น Array ของข้อความ
+
+  * **Method:** `POST`
+  * **Body (JSON):**
+    ```json
+    {
+      "text": "ประโยคยาวๆ ที่ใช้ทดสอบการตัดคำ",
+      "maxLength": 10
+    }
+    ```
+  * **Response (JSON):**
+    ```json
+    {
+      "result": [
+        "ประโยคยาวๆ ",
+        "ที่ใช้ทดสอบ",
+        "การตัดคำ"
+      ]
+    }
+    ```
+
+### 3\. `/split-and-break`
+
+ตัดข้อความเป็นข้อความเดียว (single text) โดยคั่นแต่ละส่วนด้วย `\n` (ขึ้นบรรทัดใหม่)
+
+  * **Method:** `POST`
+  * **Body (JSON):**
+    ```json
+    {
+      "text": "ประโยคยาวๆ ที่ใช้ทดสอบการตัดคำทุกๆ 10 ตัวอักษร",
+      "maxLength": 10
+    }
+    ```
+  * **Response (Text):**
+    ```
+    ประโยคยาวๆ
+    ที่ใช้ทดสอบ
+    การตัดคำทุกๆ
+    10 ตัวอักษร
+    ```
+
+-----
+
+## Dependency
+
+  * [wordcut](https://www.npmjs.com/package/wordcut)
+  * [express](https://www.npmjs.com/package/express)
+
+<!-- end list -->
+
+```
+```

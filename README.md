@@ -42,7 +42,7 @@ docker run -p 3000:3000 -d thai-sentence-cut-api
 
 ### 2\. `/split`
 
-ตัดข้อความและ trả về เป็น Array ของข้อความ
+ตัดข้อความและแบ่งเป็น Array ของข้อความ
 
   * **Method:** `POST`
   * **Body (JSON):**

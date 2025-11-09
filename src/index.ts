@@ -1,4 +1,5 @@
 // src/index.ts
+const escapeRegExp = (str: string) => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
 var wordcut = require("wordcut");
 var uncountedCharacter =
@@ -30,7 +31,7 @@ export var splitThaiStringByLength = function (
       } else {
         result.push(previous);
         temp = temp.replace(
-          new RegExp(previous.replace(/\(/g, "\\(").replace(/\)/g, "\\)")),
+          new RegExp(escapeRegExp(previous)), // แก้ไขโดยเรียกใช้ฟังก์ชัน escapeRegExp,
           ""
         );
         previous = "";
